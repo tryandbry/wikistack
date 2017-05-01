@@ -26,18 +26,17 @@ nunjucks.configure('views',{noCache: false});
 
 // database postgres
 models.db.sync() // {force: true}
-.then(function () {
-  // make sure to replace the name below with your express app
-  app.listen(3000, function () {
-    console.log('Server is listening on port 3000!');
-  });
-})
+    .then(function () {
+        app.listen(3000, function () {
+            console.log('Server is listening on port 3000!');
+        });
+    })
 .catch(console.error);
 
 // routes
 app.use('/', router);
 
 // error handler
-app.use(function(err,req,res,next){
-  res.render('error.html', {error:err});
+app.use(function(err, req, res, next) {
+  res.render('error.html', { error: err });
 });

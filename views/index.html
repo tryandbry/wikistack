@@ -1,9 +1,12 @@
 {% extends "layout.html" %}
 
+<!-- all articles -->
 {% block content %}
-  <h3>Pages</h3>
-  <hr>
-  <ul class="list-unstyled">
-    <!-- PLACEHOLDER LIST OF PAGES -->
-  </ul>
+    <h3>Articles</h3> 
+    <hr>
+    <ul class="list-unstyled">
+        {% for page in pages %}
+            <li><a href='{{page.route}}'>{{page.title}}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}

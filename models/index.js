@@ -15,7 +15,7 @@ var Page = db.define('page', {
     },
     hooks : {
         beforeValidate : function(page) {
-            // test if title is unique
+            // test if title is unique?
             
             // populate non-null title, urlTitle
             if (page.title) {
@@ -30,10 +30,15 @@ var Page = db.define('page', {
     }
 });
 
-var User = db.define('user',{
+var User = db.define('user', {
   name: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
   email: {type: Sequelize.STRING, allowNull: false, validate: {isEmail: true} }
 });
+
+// association
+// each Page has 1 User
+// each User can have many  Page
+Page.belongsTo(User, {as: 'author'});
 
 module.exports = {
   Page: Page,
