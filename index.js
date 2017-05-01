@@ -36,3 +36,8 @@ models.db.sync() // {force: true}
 
 // routes
 app.use('/', router);
+
+// error handler
+app.use(function(err,req,res,next){
+  res.render('error.html', {error:err});
+});
