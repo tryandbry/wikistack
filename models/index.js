@@ -6,25 +6,27 @@ var db = new Sequelize('postgres://localhost:5432/wikistack');
 var Page = db.define('page', {
     title: {type: Sequelize.STRING, allowNull: false, primaryKey: true},
     urlTitle: {type: Sequelize.STRING, allowNull: false},
-    content: {type: Sequelize.TEXT, allowNull: false},
+    content: {type: Sequelize.TEXT, defaultValue: ''},
     status: {type: Sequelize.ENUM('open','closed')},
     date: {type: Sequelize.DATE, defaultValue: Sequelize.NOW} 
 } , {
     getterMethods : {
         route: function () { return '/wiki/' + this.urlTitle }
-    }
-},  {
+    },
     hooks : {
-        beforeValidate : function(){
-	  if(newrow.urlTitle){
-	    newrow.urlTitle = newrow.urlTitle.replace(/\s/g,"_").replace(/\W/g,"");
-	  }
-	  else {
-	    newrow.urlTitle = "PIKAPIKA" + String(Math.floor(Math.random()*10000000000));
-	  }
-
-	  return newrow;
-	}
+        beforeValidate : function(page) {
+            // test if title is unique
+            
+            // populate non-null title, urlTitle
+            if (page.title) {
+                let newUT = page.title.replace(/\s/g,"_").replace(/\W/g,"");
+                page.set('urlTitle', newUT);
+            } else {
+                let newTitle = String(Math.floor(Math.random()*10000000000));
+                page.set('title', newTitle);
+                page.set('urlTitle', newTitle);
+            }
+        }
     }
 });
 
@@ -38,4 +40,3 @@ module.exports = {
   User: User,
   db: db
 };
-

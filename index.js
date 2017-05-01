@@ -25,7 +25,7 @@ app.set('view engine', 'html');
 nunjucks.configure('views',{noCache: false});
 
 // database postgres
-models.db.sync({force: true})
+models.db.sync() // {force: true}
 .then(function () {
   // make sure to replace the name below with your express app
   app.listen(3000, function () {

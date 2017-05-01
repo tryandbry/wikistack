@@ -6,26 +6,30 @@ const models = require('../models');
 var Page = models.Page;
 var User = models.User;
 
-router.get('/', function (req, res) {
-    res.redirect('/')
-});
-
 router.post('/', function (req, res) {
-  utils.printo(req.body,"POSTY!");
+    utils.printo(req.body, "POSTY!");
 
-  var newrow = {   title: req.body.title,
-                 content: req.body.content,
-	       };
-
-  utils.printo(newrow,"Normalized: ");
-
-  Page.build(newrow).save(); 
-
-  res.json(newrow);
+    let page = {
+        title: req.body.title, 
+        content: req.body.content,
+        status: req.body.content
+    };
+    Page.build(page)
+        .save()
+        .then(result => res.render(result))
+        .catch(err => res.send('ERROR ON SAVING POST'));
 });
 
 router.get('/add', function (req, res) {
     res.render('../views/addpage.html', {});
+});
+
+// below '/add'
+router.get('/:urlTitle', function (req, res) {
+    Page
+        .findAll({ where: {urlTitle: req.params.urlTitle} }) 
+        .then(result => (console.log(result), res.render('wikipage.html', result[0])))
+        .catch(err => console.log(err));
 });
 
 module.exports = router;
