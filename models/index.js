@@ -1,4 +1,5 @@
 var Sequelize = require('sequelize');
+var utils = require('../utils');
 var db = new Sequelize('postgres://localhost:5432/wikistack');
 
 // DEFINE MODELS
@@ -12,6 +13,19 @@ var Page = db.define('page', {
     getterMethods : {
         route: function () { return '/wiki/' + this.urlTitle }
     }
+},  {
+    hooks : {
+        beforeValidate : function(){
+	  if(newrow.urlTitle){
+	    newrow.urlTitle = newrow.urlTitle.replace(/\s/g,"_").replace(/\W/g,"");
+	  }
+	  else {
+	    newrow.urlTitle = "PIKAPIKA" + String(Math.floor(Math.random()*10000000000));
+	  }
+
+	  return newrow;
+	}
+    }
 });
 
 var User = db.define('user',{
@@ -24,3 +38,4 @@ module.exports = {
   User: User,
   db: db
 };
+

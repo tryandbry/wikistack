@@ -1,14 +1,27 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
-const chalk = require('chalk')
+const utils = require('../utils');
+const models = require('../models');
+
+var Page = models.Page;
+var User = models.User;
 
 router.get('/', function (req, res) {
     res.redirect('/')
 });
 
 router.post('/', function (req, res) {
-  printo(req.body,"POSTY!");
-  res.json(req.body)
+  utils.printo(req.body,"POSTY!");
+
+  var newrow = {   title: req.body.title,
+                 content: req.body.content,
+	       };
+
+  utils.printo(newrow,"Normalized: ");
+
+  Page.build(newrow).save(); 
+
+  res.json(newrow);
 });
 
 router.get('/add', function (req, res) {
@@ -16,15 +29,3 @@ router.get('/add', function (req, res) {
 });
 
 module.exports = router;
-
-
-function printo(obj,header){
-  var keys = Object.keys(obj);
-  var str = "";
-  keys.forEach( key=>{
-    str += ",\n" + key + ":" + obj[key];
-  });
-  str = header + " {\n" + str.slice(2) + "\n}";
-  console.log(chalk.magenta(str));
-
-}
