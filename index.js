@@ -1,17 +1,21 @@
-var morgan = require('morgan');
-var express = require('express');
-var app = express();
-var nunjucks = require('nunjucks');
-var models = require('./models');
-var bodyParser = require('body-parser');
+const morgan = require('morgan');
+const express = require('express');
+const nunjucks = require('nunjucks');
+const models = require('./models');
+const bodyParser = require('body-parser');
+const router = require('./routes');
 
-//**************
-//BEGIN MIDDLEWARE SECTION
+// 
+const app = express();
+
+// **************
+// BEGIN MIDDLEWARE SECTION
 app.use(morgan('tiny'));
-app.use(bodyParser.urlencoded({ extended: false});
+app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
-//END MIDDLEWARE SECTION
-//***************
+app.use(express.static('public'));
+// END MIDDLEWARE SECTION
+// ***************
 
 // set nunjucks as the render engine for all html files
 app.engine('html',nunjucks.render);
@@ -20,6 +24,7 @@ app.set('view engine', 'html');
 // set default templates directory to "views"
 nunjucks.configure('views',{noCache: false});
 
+// database postgres
 models.db.sync({force: true})
 .then(function () {
   // make sure to replace the name below with your express app
@@ -29,3 +34,5 @@ models.db.sync({force: true})
 })
 .catch(console.error);
 
+// routes
+app.use('/', router);
